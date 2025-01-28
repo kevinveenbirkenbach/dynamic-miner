@@ -1,9 +1,9 @@
 version: '3.8'
 
 services:
-  ethereum-miner:
+  nvidia-gpu-miner:
     image: ethereumminer/ethminer:latest
-    container_name: gpu-miner
+    container_name: nvidia-gpu-miner
     restart: unless-stopped
     runtime: nvidia
     environment:
@@ -20,6 +20,19 @@ services:
           devices:
             - driver: nvidia
               capabilities: [gpu]
+  
+  intel-gpu-miner:
+    image: ethereumminer/ethminer:latest
+    container_name: intel-gpu-miner
+    restart: unless-stopped
+    environment:
+      - POOL_ADDRESS=${POOL_ADDRESS}
+      - PORT=${PORT}
+      - WALLET_ADDRESS=${WALLET_ADDRESS}
+    devices:
+      - /dev/dri:/dev/dri
+    command: >
+      ethminer -P stratum+tcp://${POOL_ADDRESS}:${PORT} -G -O ${WALLET_ADDRESS} --opencl-device Intel
 
   cpu-miner:
     image: xmrig/xmrig:latest
