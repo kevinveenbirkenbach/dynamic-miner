@@ -60,16 +60,13 @@ CPU_WALLET_ADDRESS=${CPU_WALLET_ADDRESS}
 EOF
 
 # NVIDIA GPU Mining Pool
-if [ "$HAS_NVIDIA" = true ]; then
-    echo "NVIDIA_POOL_ADDRESS=${NVIDIA_POOL_ADDRESS}" >> .env
-    echo "NVIDIA_WALLET_ADDRESS=${NVIDIA_WALLET_ADDRESS}" >> .env
-fi
+echo "NVIDIA_POOL_ADDRESS=${NVIDIA_POOL_ADDRESS:-0}" >> .env
+echo "NVIDIA_WALLET_ADDRESS=${NVIDIA_WALLET_ADDRESS:-0}" >> .env
 
 # Intel GPU Mining Pool
-if [ "$HAS_INTEL" = true ]; then
-    echo "INTEL_POOL_ADDRESS=${INTEL_POOL_ADDRESS}" >> .env
-    echo "INTEL_WALLET_ADDRESS=${INTEL_WALLET_ADDRESS}" >> .env
-fi
+echo "INTEL_POOL_ADDRESS=${INTEL_POOL_ADDRESS:-0}" >> .env
+echo "INTEL_WALLET_ADDRESS=${INTEL_WALLET_ADDRESS:-0}" >> .env
+
 
 echo ".env file created with mining pool and wallet details."
 
