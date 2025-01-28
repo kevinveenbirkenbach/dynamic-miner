@@ -1,12 +1,17 @@
 #!/bin/bash
 
-# Thresholds for usage
-GPU_THRESHOLD=10    # GPU usage percentage
-CPU_THRESHOLD=20    # CPU usage percentage
-CHECK_INTERVAL=10   # Time in seconds between checks
+# Thresholds for GPU usage (separate start and stop thresholds)
+GPU_START_THRESHOLD=10   # GPU usage percentage to start the GPU miner
+GPU_STOP_THRESHOLD=50    # GPU usage percentage to stop the GPU miner
+
+# Thresholds for CPU usage (separate start and stop thresholds)
+CPU_START_THRESHOLD=20   # CPU usage percentage to start the CPU miner
+CPU_STOP_THRESHOLD=70    # CPU usage percentage to stop the CPU miner
+
+CHECK_INTERVAL=10         # Time in seconds between checks
 
 # Docker container names
-GPU_CONTAINER_NAME="ethereum-miner"
+GPU_CONTAINER_NAME="gpu-miner"
 CPU_CONTAINER_NAME="cpu-miner"
 
 # Function to get GPU utilization using nvidia-smi
@@ -26,28 +31,28 @@ while true; do
     CPU_USAGE=$(get_cpu_usage)
 
     # GPU Miner Logic
-    if (( $(echo "$GPU_USAGE < $GPU_THRESHOLD" | bc -l) )); then
+    if (( $(echo "$GPU_USAGE < $GPU_START_THRESHOLD" | bc -l) )); then
         if ! docker ps | grep -q "$GPU_CONTAINER_NAME"; then
             echo "$(date): GPU usage is low ($GPU_USAGE%). Starting GPU miner..."
-            docker-compose up -d gpu-miner
+            docker-compose up -d "$GPU_CONTAINER_NAME"
         fi
-    else
+    elif (( $(echo "$GPU_USAGE > $GPU_STOP_THRESHOLD" | bc -l) )); then
         if docker ps | grep -q "$GPU_CONTAINER_NAME"; then
             echo "$(date): GPU usage is high ($GPU_USAGE%). Stopping GPU miner..."
-            docker-compose stop gpu-miner
+            docker-compose stop "$GPU_CONTAINER_NAME"
         fi
     fi
 
     # CPU Miner Logic
-    if (( $(echo "$CPU_USAGE < $CPU_THRESHOLD" | bc -l) )); then
+    if (( $(echo "$CPU_USAGE < $CPU_START_THRESHOLD" | bc -l) )); then
         if ! docker ps | grep -q "$CPU_CONTAINER_NAME"; then
             echo "$(date): CPU usage is low ($CPU_USAGE%). Starting CPU miner..."
-            docker-compose up -d cpu-miner
+            docker-compose up -d "$CPU_CONTAINER_NAME"
         fi
-    else
+    elif (( $(echo "$CPU_USAGE > $CPU_STOP_THRESHOLD" | bc -l) )); then
         if docker ps | grep -q "$CPU_CONTAINER_NAME"; then
             echo "$(date): CPU usage is high ($CPU_USAGE%). Stopping CPU miner..."
-            docker-compose stop cpu-miner
+            docker-compose stop "$CPU_CONTAINER_NAME"
         fi
     fi
 
