@@ -3,13 +3,13 @@ set -e
 
 echo "Welcome to the dynamic-eth-miner setup!"
 
-# Function to check if NVIDIA GPU is available
+# Function to check if an NVIDIA GPU is available
 is_nvidia_available() {
     nvidia-smi > /dev/null 2>&1
     return $?
 }
 
-# Function to check if Intel GPU is available
+# Function to check if an Intel GPU is available
 is_intel_available() {
     ls /dev/dri/render* | grep -q "card" > /dev/null 2>&1
     return $?
@@ -29,44 +29,81 @@ if is_intel_available; then
     HAS_INTEL=true
 fi
 
-# Prompt for general inputs
-read -p "Enter CPU Start Threshold (e.g., 20): " CPU_START_THRESHOLD
-read -p "Enter CPU Stop Threshold (e.g., 70): " CPU_STOP_THRESHOLD
-read -p "Enter Check Interval in seconds (e.g., 10): " CHECK_INTERVAL
-read -p "Enter CPU Mining Pool Address (e.g., pool.supportxmr.com:3333): " CPU_POOL_ADDRESS
-read -p "Enter CPU Wallet Address: " CPU_WALLET_ADDRESS
+# Set default values
+DEFAULT_CPU_START_THRESHOLD=20
+DEFAULT_CPU_STOP_THRESHOLD=70
+DEFAULT_CHECK_INTERVAL=10
+DEFAULT_CPU_POOL_ADDRESS="pool.supportxmr.com:3333"
+DEFAULT_CPU_WALLET_ADDRESS="4A8xoyxSJoZbbN25W6rRE476gSeqrzgFdXjaJX5D8zFnW9hQYVTfUbV1Q5eZ1QSvBe32yJuwDn4VMMBTXKfsnvnvNY9o8ez"
 
-# Prompt for NVIDIA GPU settings if available
+DEFAULT_NVIDIA_START_THRESHOLD=10
+DEFAULT_NVIDIA_STOP_THRESHOLD=50
+DEFAULT_NVIDIA_POOL_ADDRESS="etc.2miners.com:1010"
+DEFAULT_NVIDIA_WALLET_ADDRESS="0xf87FBf9BDAf798FABb010E3dDe90Da5dD8cB35C4"
+
+DEFAULT_INTEL_START_THRESHOLD=10
+DEFAULT_INTEL_STOP_THRESHOLD=50
+DEFAULT_INTEL_POOL_ADDRESS="etc.2miners.com:1010"
+DEFAULT_INTEL_WALLET_ADDRESS="0xf87FBf9BDAf798FABb010E3dDe90Da5dD8cB35C4"
+
+# Prompt for inputs with default values
+read -p "Enter CPU Start Threshold (default: $DEFAULT_CPU_START_THRESHOLD): " CPU_START_THRESHOLD
+CPU_START_THRESHOLD=${CPU_START_THRESHOLD:-$DEFAULT_CPU_START_THRESHOLD}
+
+read -p "Enter CPU Stop Threshold (default: $DEFAULT_CPU_STOP_THRESHOLD): " CPU_STOP_THRESHOLD
+CPU_STOP_THRESHOLD=${CPU_STOP_THRESHOLD:-$DEFAULT_CPU_STOP_THRESHOLD}
+
+read -p "Enter Check Interval in seconds (default: $DEFAULT_CHECK_INTERVAL): " CHECK_INTERVAL
+CHECK_INTERVAL=${CHECK_INTERVAL:-$DEFAULT_CHECK_INTERVAL}
+
+read -p "Enter CPU Mining Pool Address (default: $DEFAULT_CPU_POOL_ADDRESS): " CPU_POOL_ADDRESS
+CPU_POOL_ADDRESS=${CPU_POOL_ADDRESS:-$DEFAULT_CPU_POOL_ADDRESS}
+
+read -p "Enter CPU Wallet Address (default: $DEFAULT_CPU_WALLET_ADDRESS): " CPU_WALLET_ADDRESS
+CPU_WALLET_ADDRESS=${CPU_WALLET_ADDRESS:-$DEFAULT_CPU_WALLET_ADDRESS}
+
 if [ "$HAS_NVIDIA" = true ]; then
-    read -p "Enter NVIDIA GPU Start Threshold (e.g., 10): " NVIDIA_START_THRESHOLD
-    read -p "Enter NVIDIA GPU Stop Threshold (e.g., 50): " NVIDIA_STOP_THRESHOLD
-    read -p "Enter Ethereum Mining Pool Address (e.g., etc.2miners.com:1010): " NVIDIA_POOL_ADDRESS
-    read -p "Enter Ethereum Wallet Address: " NVIDIA_WALLET_ADDRESS
+    read -p "Enter NVIDIA GPU Start Threshold (default: $DEFAULT_NVIDIA_START_THRESHOLD): " NVIDIA_START_THRESHOLD
+    NVIDIA_START_THRESHOLD=${NVIDIA_START_THRESHOLD:-$DEFAULT_NVIDIA_START_THRESHOLD}
+
+    read -p "Enter NVIDIA GPU Stop Threshold (default: $DEFAULT_NVIDIA_STOP_THRESHOLD): " NVIDIA_STOP_THRESHOLD
+    NVIDIA_STOP_THRESHOLD=${NVIDIA_STOP_THRESHOLD:-$DEFAULT_NVIDIA_STOP_THRESHOLD}
+
+    read -p "Enter NVIDIA Pool Address (default: $DEFAULT_NVIDIA_POOL_ADDRESS): " NVIDIA_POOL_ADDRESS
+    NVIDIA_POOL_ADDRESS=${NVIDIA_POOL_ADDRESS:-$DEFAULT_NVIDIA_POOL_ADDRESS}
+
+    read -p "Enter NVIDIA Wallet Address (default: $DEFAULT_NVIDIA_WALLET_ADDRESS): " NVIDIA_WALLET_ADDRESS
+    NVIDIA_WALLET_ADDRESS=${NVIDIA_WALLET_ADDRESS:-$DEFAULT_NVIDIA_WALLET_ADDRESS}
 fi
 
-# Prompt for Intel GPU settings if available
 if [ "$HAS_INTEL" = true ]; then
-    read -p "Enter Intel GPU Start Threshold (e.g., 10): " INTEL_START_THRESHOLD
-    read -p "Enter Intel GPU Stop Threshold (e.g., 50): " INTEL_STOP_THRESHOLD
-    read -p "Enter Ethereum Mining Pool Address (e.g., etc.2miners.com:1010): " INTEL_POOL_ADDRESS
-    read -p "Enter Ethereum Wallet Address: " INTEL_WALLET_ADDRESS
+    read -p "Enter Intel GPU Start Threshold (default: $DEFAULT_INTEL_START_THRESHOLD): " INTEL_START_THRESHOLD
+    INTEL_START_THRESHOLD=${INTEL_START_THRESHOLD:-$DEFAULT_INTEL_START_THRESHOLD}
+
+    read -p "Enter Intel GPU Stop Threshold (default: $DEFAULT_INTEL_STOP_THRESHOLD): " INTEL_STOP_THRESHOLD
+    INTEL_STOP_THRESHOLD=${INTEL_STOP_THRESHOLD:-$DEFAULT_INTEL_STOP_THRESHOLD}
+
+    read -p "Enter Intel Pool Address (default: $DEFAULT_INTEL_POOL_ADDRESS): " INTEL_POOL_ADDRESS
+    INTEL_POOL_ADDRESS=${INTEL_POOL_ADDRESS:-$DEFAULT_INTEL_POOL_ADDRESS}
+
+    read -p "Enter Intel Wallet Address (default: $DEFAULT_INTEL_WALLET_ADDRESS): " INTEL_WALLET_ADDRESS
+    INTEL_WALLET_ADDRESS=${INTEL_WALLET_ADDRESS:-$DEFAULT_INTEL_WALLET_ADDRESS}
 fi
 
-# Create a .env file for Docker Compose
+# Create the .env file
 cat <<EOF > .env
 # CPU Mining Pool
 CPU_POOL_ADDRESS=${CPU_POOL_ADDRESS}
 CPU_WALLET_ADDRESS=${CPU_WALLET_ADDRESS}
-EOF
 
 # NVIDIA GPU Mining Pool
-echo "NVIDIA_POOL_ADDRESS=${NVIDIA_POOL_ADDRESS:-0}" >> .env
-echo "NVIDIA_WALLET_ADDRESS=${NVIDIA_WALLET_ADDRESS:-0}" >> .env
+NVIDIA_POOL_ADDRESS=${NVIDIA_POOL_ADDRESS}
+NVIDIA_WALLET_ADDRESS=${NVIDIA_WALLET_ADDRESS}
 
 # Intel GPU Mining Pool
-echo "INTEL_POOL_ADDRESS=${INTEL_POOL_ADDRESS:-0}" >> .env
-echo "INTEL_WALLET_ADDRESS=${INTEL_WALLET_ADDRESS:-0}" >> .env
-
+INTEL_POOL_ADDRESS=${INTEL_POOL_ADDRESS}
+INTEL_WALLET_ADDRESS=${INTEL_WALLET_ADDRESS}
+EOF
 
 echo ".env file created with mining pool and wallet details."
 
@@ -96,9 +133,9 @@ Requires=docker.service
 [Service]
 Type=simple
 ExecStart=/bin/bash $MONITOR_SCRIPT_PATH \
-    ${NVIDIA_START_THRESHOLD:-0} ${NVIDIA_STOP_THRESHOLD:-0} \
+    ${NVIDIA_START_THRESHOLD} ${NVIDIA_STOP_THRESHOLD} \
     $CPU_START_THRESHOLD $CPU_STOP_THRESHOLD $CHECK_INTERVAL \
-    ${INTEL_START_THRESHOLD:-0} ${INTEL_STOP_THRESHOLD:-0}
+    ${INTEL_START_THRESHOLD} ${INTEL_STOP_THRESHOLD}
 Restart=always
 EnvironmentFile=${PWD}/.env
 
