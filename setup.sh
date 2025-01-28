@@ -33,7 +33,7 @@ echo "Starting Docker containers..."
 docker-compose up -d
 
 # Create the monitoring script service
-MONITOR_SCRIPT_PATH=$(pwd)/gpu_miner_control.sh
+MONITOR_SCRIPT_PATH=$(pwd)/miner_control.sh
 
 # Create the Systemd service file
 cat <<EOF | sudo tee /etc/systemd/system/miner-monitor.service
