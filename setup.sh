@@ -40,8 +40,7 @@ read -p "Enter CPU Wallet Address: " CPU_WALLET_ADDRESS
 if [ "$HAS_NVIDIA" = true ]; then
     read -p "Enter NVIDIA GPU Start Threshold (e.g., 10): " NVIDIA_START_THRESHOLD
     read -p "Enter NVIDIA GPU Stop Threshold (e.g., 50): " NVIDIA_STOP_THRESHOLD
-    read -p "Enter Ethereum Mining Pool Address (e.g., eu1.ethermine.org): " NVIDIA_POOL_ADDRESS
-    read -p "Enter Ethereum Mining Pool Port (e.g., 4444): " NVIDIA_PORT
+    read -p "Enter Ethereum Mining Pool Address (e.g., etc.2miners.com:1010): " NVIDIA_POOL_ADDRESS
     read -p "Enter Ethereum Wallet Address: " NVIDIA_WALLET_ADDRESS
 fi
 
@@ -49,7 +48,7 @@ fi
 if [ "$HAS_INTEL" = true ]; then
     read -p "Enter Intel GPU Start Threshold (e.g., 10): " INTEL_START_THRESHOLD
     read -p "Enter Intel GPU Stop Threshold (e.g., 50): " INTEL_STOP_THRESHOLD
-    read -p "Enter Ethereum Mining Pool Address (e.g., eu1.ethermine.org): " INTEL_POOL_ADDRESS
+    read -p "Enter Ethereum Mining Pool Address (e.g., etc.2miners.com:1010): " INTEL_POOL_ADDRESS
     read -p "Enter Ethereum Wallet Address: " INTEL_WALLET_ADDRESS
 fi
 
@@ -63,7 +62,6 @@ EOF
 # NVIDIA GPU Mining Pool
 if [ "$HAS_NVIDIA" = true ]; then
     echo "NVIDIA_POOL_ADDRESS=${NVIDIA_POOL_ADDRESS}" >> .env
-    echo "NVIDIA_PORT=${NVIDIA_PORT}" >> .env
     echo "NVIDIA_WALLET_ADDRESS=${NVIDIA_WALLET_ADDRESS}" >> .env
 fi
 
