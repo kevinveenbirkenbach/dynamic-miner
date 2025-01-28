@@ -7,6 +7,8 @@ read -p "Enter GPU Start Threshold (e.g., 10): " GPU_START_THRESHOLD
 read -p "Enter GPU Stop Threshold (e.g., 50): " GPU_STOP_THRESHOLD
 read -p "Enter CPU Start Threshold (e.g., 20): " CPU_START_THRESHOLD
 read -p "Enter CPU Stop Threshold (e.g., 70): " CPU_STOP_THRESHOLD
+read -p "Enter Intel GPU Start Threshold (e.g., 10): " INTEL_START_THRESHOLD
+read -p "Enter Intel GPU Stop Threshold (e.g., 50): " INTEL_STOP_THRESHOLD
 read -p "Enter Check Interval in seconds (e.g., 10): " CHECK_INTERVAL
 read -p "Enter Ethereum Mining Pool Address (e.g., eu1.ethermine.org): " GPU_POOL_ADDRESS
 read -p "Enter Ethereum Mining Pool Port (e.g., 4444): " GPU_PORT
@@ -44,7 +46,7 @@ Requires=docker.service
 
 [Service]
 Type=simple
-ExecStart=/bin/bash $MONITOR_SCRIPT_PATH ${GPU_START_THRESHOLD} ${GPU_STOP_THRESHOLD} ${CPU_START_THRESHOLD} ${CPU_STOP_THRESHOLD} ${CHECK_INTERVAL}
+ExecStart=/bin/bash $MONITOR_SCRIPT_PATH ${GPU_START_THRESHOLD} ${GPU_STOP_THRESHOLD} ${CPU_START_THRESHOLD} ${CPU_STOP_THRESHOLD} ${CHECK_INTERVAL} ${INTEL_START_THRESHOLD} ${INTEL_STOP_THRESHOLD}
 Restart=always
 EnvironmentFile=${PWD}/.env
 
