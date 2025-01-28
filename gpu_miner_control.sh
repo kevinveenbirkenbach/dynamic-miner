@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # Thresholds for GPU usage (separate start and stop thresholds)
-GPU_START_THRESHOLD=10   # GPU usage percentage to start the GPU miner
-GPU_STOP_THRESHOLD=50    # GPU usage percentage to stop the GPU miner
+GPU_START_THRESHOLD=$1  # GPU usage percentage to start the GPU miner
+GPU_STOP_THRESHOLD=$2   # GPU usage percentage to stop the GPU miner
 
 # Thresholds for CPU usage (separate start and stop thresholds)
-CPU_START_THRESHOLD=20   # CPU usage percentage to start the CPU miner
-CPU_STOP_THRESHOLD=70    # CPU usage percentage to stop the CPU miner
+CPU_START_THRESHOLD=$3  # CPU usage percentage to start the CPU miner
+CPU_STOP_THRESHOLD=$4   # CPU usage percentage to stop the CPU miner
 
-CHECK_INTERVAL=10         # Time in seconds between checks
+CHECK_INTERVAL=$5       # Time in seconds between checks
 
 # Docker container names
 GPU_CONTAINER_NAME="gpu-miner"
