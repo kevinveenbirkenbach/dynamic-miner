@@ -9,14 +9,7 @@ services:
       - /dev/nvidia-uvm:/dev/nvidia-uvm
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
-    command: >
-      xmrig
-      -a kawpow
-      -o ${NVIDIA_POOL_ADDRESS}
-      -u ${NVIDIA_WALLET_ADDRESS}
-      -p x
-      --cuda
-      --no-cpu
+    command: -a kawpow -o ${NVIDIA_POOL_ADDRESS} -u ${NVIDIA_WALLET_ADDRESS} -p x --cuda --no-cpu
 
   intel-gpu-miner:
     image: xmrig/xmrig:latest
@@ -24,18 +17,10 @@ services:
     restart: always
     devices:
       - /dev/dri:/dev/dri
-    command: >
-      xmrig
-      -a kawpow
-      -o ${INTEL_POOL_ADDRESS}
-      -u ${INTEL_WALLET_ADDRESS}
-      -p x
-      --opencl
-      --no-cpu
+    command: -a kawpow -o ${INTEL_POOL_ADDRESS} -u ${INTEL_WALLET_ADDRESS} -p x --opencl --no-cpu
 
   cpu-miner:
     image: xmrig/xmrig:latest
     container_name: cpu-miner
     restart: no
-    command: >
-      xmrig -o ${CPU_POOL_ADDRESS} -u ${CPU_WALLET_ADDRESS} -p x --cpu-priority=3
+    command: -o ${CPU_POOL_ADDRESS} -u ${CPU_WALLET_ADDRESS} -p x --cpu-priority=3

@@ -43,8 +43,8 @@ NVIDIA_WALLET_ADDRESS="0xf87FBf9BDAf798FABb010E3dDe90Da5dD8cB35C4"
 
 INTEL_START_THRESHOLD=10
 INTEL_STOP_THRESHOLD=50
-INTEL_POOL_ADDRESS="stratum+tcp://eu1.miningpoolhub.com:17004"
-INTEL_WALLET_ADDRESS="0xf87FBf9BDAf798FABb010E3dDe90Da5dD8cB35C4"
+INTEL_POOL_ADDRESS="$NVIDIA_POOL_ADDRESS"
+INTEL_WALLET_ADDRESS="$NVIDIA_WALLET_ADDRESS"
 
 # Load or create .env file
 if [ -f ".env" ]; then
@@ -156,13 +156,13 @@ EOF
 echo "Systemd service file created: /etc/systemd/system/miner-monitor.service"
 
 echo "Reloading Systemd daemon and enabling the service..."
-sudo systemctl daemon-reload
-sudo systemctl enable miner-monitor.service
+systemctl daemon-reload
+systemctl enable miner-monitor.service
 
 echo "Starting the miner monitoring service..."
-sudo systemctl start miner-monitor.service
+systemctl restart miner-monitor.service
 
 echo "Checking service status..."
-sudo systemctl status miner-monitor.service
+systemctl status miner-monitor.service
 
 echo "Setup complete! The mining system is now running."
