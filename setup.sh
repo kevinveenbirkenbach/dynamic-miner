@@ -29,22 +29,22 @@ if is_intel_available; then
     HAS_INTEL=true
 fi
 
-# Set default values
-DEFAULT_CPU_START_THRESHOLD=20
-DEFAULT_CPU_STOP_THRESHOLD=70
-DEFAULT_CHECK_INTERVAL=10
-DEFAULT_CPU_POOL_ADDRESS="pool.supportxmr.com:3333"
-DEFAULT_CPU_WALLET_ADDRESS="4A8xoyxSJoZbbN25W6rRE476gSeqrzgFdXjaJX5D8zFnW9hQYVTfUbV1Q5eZ1QSvBe32yJuwDn4VMMBTXKfsnvnvNY9o8ez"
+# Default values
+CPU_START_THRESHOLD=20
+CPU_STOP_THRESHOLD=70
+CHECK_INTERVAL=10
+CPU_POOL_ADDRESS="pool.supportxmr.com:3333"
+CPU_WALLET_ADDRESS="4A8xoyxSJoZbbN25W6rRE476gSeqrzgFdXjaJX5D8zFnW9hQYVTfUbV1Q5eZ1QSvBe32yJuwDn4VMMBTXKfsnvnvNY9o8ez"
 
-DEFAULT_NVIDIA_START_THRESHOLD=10
-DEFAULT_NVIDIA_STOP_THRESHOLD=50
-DEFAULT_NVIDIA_POOL_ADDRESS="stratum+tcp://eu1.miningpoolhub.com:17004"
-DEFAULT_NVIDIA_WALLET_ADDRESS="0xf87FBf9BDAf798FABb010E3dDe90Da5dD8cB35C4"
+NVIDIA_START_THRESHOLD=10
+NVIDIA_STOP_THRESHOLD=50
+NVIDIA_POOL_ADDRESS="stratum+tcp://eu1.miningpoolhub.com:17004"
+NVIDIA_WALLET_ADDRESS="0xf87FBf9BDAf798FABb010E3dDe90Da5dD8cB35C4"
 
-DEFAULT_INTEL_START_THRESHOLD=10
-DEFAULT_INTEL_STOP_THRESHOLD=50
-DEFAULT_INTEL_POOL_ADDRESS="${DEFAULT_NVIDIA_POOL_ADDRESS}"
-DEFAULT_INTEL_WALLET_ADDRESS="${DEFAULT_NVIDIA_WALLET_ADDRESS}"
+INTEL_START_THRESHOLD=10
+INTEL_STOP_THRESHOLD=50
+INTEL_POOL_ADDRESS="stratum+tcp://eu1.miningpoolhub.com:17004"
+INTEL_WALLET_ADDRESS="0xf87FBf9BDAf798FABb010E3dDe90Da5dD8cB35C4"
 
 # Load or create .env file
 if [ -f ".env" ]; then
@@ -53,52 +53,51 @@ if [ -f ".env" ]; then
 else
     echo ".env file not found. Creating new .env file..."
 
+    # Prompt for values and overwrite defaults only if a value is provided
+    read -p "Enter CPU Start Threshold (default: $CPU_START_THRESHOLD): " input
+    CPU_START_THRESHOLD=${input:-$CPU_START_THRESHOLD}
 
-    # Prompt for variables and use defaults or existing .env values
-    read -p "Enter CPU Start Threshold (default: ${CPU_START_THRESHOLD:-$DEFAULT_CPU_START_THRESHOLD}): " CPU_START_THRESHOLD
-    CPU_START_THRESHOLD=${CPU_START_THRESHOLD:-${CPU_START_THRESHOLD:-$DEFAULT_CPU_START_THRESHOLD}}
+    read -p "Enter CPU Stop Threshold (default: $CPU_STOP_THRESHOLD): " input
+    CPU_STOP_THRESHOLD=${input:-$CPU_STOP_THRESHOLD}
 
-    read -p "Enter CPU Stop Threshold (default: ${CPU_STOP_THRESHOLD:-$DEFAULT_CPU_STOP_THRESHOLD}): " CPU_STOP_THRESHOLD
-    CPU_STOP_THRESHOLD=${CPU_STOP_THRESHOLD:-${CPU_STOP_THRESHOLD:-$DEFAULT_CPU_STOP_THRESHOLD}}
+    read -p "Enter Check Interval in seconds (default: $CHECK_INTERVAL): " input
+    CHECK_INTERVAL=${input:-$CHECK_INTERVAL}
 
-    read -p "Enter Check Interval in seconds (default: ${CHECK_INTERVAL:-$DEFAULT_CHECK_INTERVAL}): " CHECK_INTERVAL
-    CHECK_INTERVAL=${CHECK_INTERVAL:-${CHECK_INTERVAL:-$DEFAULT_CHECK_INTERVAL}}
+    read -p "Enter CPU Mining Pool Address (default: $CPU_POOL_ADDRESS): " input
+    CPU_POOL_ADDRESS=${input:-$CPU_POOL_ADDRESS}
 
-    read -p "Enter CPU Mining Pool Address (default: ${CPU_POOL_ADDRESS:-$DEFAULT_CPU_POOL_ADDRESS}): " CPU_POOL_ADDRESS
-    CPU_POOL_ADDRESS=${CPU_POOL_ADDRESS:-${CPU_POOL_ADDRESS:-$DEFAULT_CPU_POOL_ADDRESS}}
-
-    read -p "Enter CPU Wallet Address (default: ${CPU_WALLET_ADDRESS:-$DEFAULT_CPU_WALLET_ADDRESS}): " CPU_WALLET_ADDRESS
-    CPU_WALLET_ADDRESS=${CPU_WALLET_ADDRESS:-${CPU_WALLET_ADDRESS:-$DEFAULT_CPU_WALLET_ADDRESS}}
+    read -p "Enter CPU Wallet Address (default: $CPU_WALLET_ADDRESS): " input
+    CPU_WALLET_ADDRESS=${input:-$CPU_WALLET_ADDRESS}
 
     if [ "$HAS_NVIDIA" = true ]; then
-        read -p "Enter NVIDIA GPU Start Threshold (default: ${NVIDIA_START_THRESHOLD:-$DEFAULT_NVIDIA_START_THRESHOLD}): " NVIDIA_START_THRESHOLD
-        NVIDIA_START_THRESHOLD=${NVIDIA_START_THRESHOLD:-${NVIDIA_START_THRESHOLD:-$DEFAULT_NVIDIA_START_THRESHOLD}}
+        read -p "Enter NVIDIA GPU Start Threshold (default: $NVIDIA_START_THRESHOLD): " input
+        NVIDIA_START_THRESHOLD=${input:-$NVIDIA_START_THRESHOLD}
 
-        read -p "Enter NVIDIA GPU Stop Threshold (default: ${NVIDIA_STOP_THRESHOLD:-$DEFAULT_NVIDIA_STOP_THRESHOLD}): " NVIDIA_STOP_THRESHOLD
-        NVIDIA_STOP_THRESHOLD=${NVIDIA_STOP_THRESHOLD:-${NVIDIA_STOP_THRESHOLD:-$DEFAULT_NVIDIA_STOP_THRESHOLD}}
+        read -p "Enter NVIDIA GPU Stop Threshold (default: $NVIDIA_STOP_THRESHOLD): " input
+        NVIDIA_STOP_THRESHOLD=${input:-$NVIDIA_STOP_THRESHOLD}
 
-        read -p "Enter NVIDIA Pool Address (default: ${NVIDIA_POOL_ADDRESS:-$DEFAULT_NVIDIA_POOL_ADDRESS}): " NVIDIA_POOL_ADDRESS
-        NVIDIA_POOL_ADDRESS=${NVIDIA_POOL_ADDRESS:-${NVIDIA_POOL_ADDRESS:-$DEFAULT_NVIDIA_POOL_ADDRESS}}
+        read -p "Enter NVIDIA Pool Address (default: $NVIDIA_POOL_ADDRESS): " input
+        NVIDIA_POOL_ADDRESS=${input:-$NVIDIA_POOL_ADDRESS}
 
-        read -p "Enter NVIDIA Wallet Address (default: ${NVIDIA_WALLET_ADDRESS:-$DEFAULT_NVIDIA_WALLET_ADDRESS}): " NVIDIA_WALLET_ADDRESS
-        NVIDIA_WALLET_ADDRESS=${NVIDIA_WALLET_ADDRESS:-${NVIDIA_WALLET_ADDRESS:-$DEFAULT_NVIDIA_WALLET_ADDRESS}}
+        read -p "Enter NVIDIA Wallet Address (default: $NVIDIA_WALLET_ADDRESS): " input
+        NVIDIA_WALLET_ADDRESS=${input:-$NVIDIA_WALLET_ADDRESS}
     fi
 
     if [ "$HAS_INTEL" = true ]; then
-        read -p "Enter Intel GPU Start Threshold (default: ${INTEL_START_THRESHOLD:-$DEFAULT_INTEL_START_THRESHOLD}): " INTEL_START_THRESHOLD
-        INTEL_START_THRESHOLD=${INTEL_START_THRESHOLD:-${INTEL_START_THRESHOLD:-$DEFAULT_INTEL_START_THRESHOLD}}
+        read -p "Enter Intel GPU Start Threshold (default: $INTEL_START_THRESHOLD): " input
+        INTEL_START_THRESHOLD=${input:-$INTEL_START_THRESHOLD}
 
-        read -p "Enter Intel GPU Stop Threshold (default: ${INTEL_STOP_THRESHOLD:-$DEFAULT_INTEL_STOP_THRESHOLD}): " INTEL_STOP_THRESHOLD
-        INTEL_STOP_THRESHOLD=${INTEL_STOP_THRESHOLD:-${INTEL_STOP_THRESHOLD:-$DEFAULT_INTEL_STOP_THRESHOLD}}
+        read -p "Enter Intel GPU Stop Threshold (default: $INTEL_STOP_THRESHOLD): " input
+        INTEL_STOP_THRESHOLD=${input:-$INTEL_STOP_THRESHOLD}
 
-        read -p "Enter Intel Pool Address (default: ${INTEL_POOL_ADDRESS:-$DEFAULT_INTEL_POOL_ADDRESS}): " INTEL_POOL_ADDRESS
-        INTEL_POOL_ADDRESS=${INTEL_POOL_ADDRESS:-${INTEL_POOL_ADDRESS:-$DEFAULT_INTEL_POOL_ADDRESS}}
+        read -p "Enter Intel Pool Address (default: $INTEL_POOL_ADDRESS): " input
+        INTEL_POOL_ADDRESS=${input:-$INTEL_POOL_ADDRESS}
 
-        read -p "Enter Intel Wallet Address (default: ${INTEL_WALLET_ADDRESS:-$DEFAULT_INTEL_WALLET_ADDRESS}): " INTEL_WALLET_ADDRESS
-        INTEL_WALLET_ADDRESS=${INTEL_WALLET_ADDRESS:-${INTEL_WALLET_ADDRESS:-$DEFAULT_INTEL_WALLET_ADDRESS}}
+        read -p "Enter Intel Wallet Address (default: $INTEL_WALLET_ADDRESS): " input
+        INTEL_WALLET_ADDRESS=${input:-$INTEL_WALLET_ADDRESS}
     fi
 
-    # Write all variables back to the .env file
+    # Write all variables to the .env file
     cat <<EOF > .env
 # CPU Mining Pool
 CPU_POOL_ADDRESS=${CPU_POOL_ADDRESS}
@@ -118,8 +117,9 @@ INTEL_START_THRESHOLD=${INTEL_START_THRESHOLD}
 INTEL_STOP_THRESHOLD=${INTEL_STOP_THRESHOLD}
 EOF
 
-    echo ".env file updated with all variables."
+    echo ".env file created with all variables."
 fi
+
 
 # Pull and build Docker Compose containers
 echo "Pulling Docker images..."
