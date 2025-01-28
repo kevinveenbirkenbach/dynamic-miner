@@ -9,11 +9,11 @@ services:
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=all
-      - POOL_ADDRESS=${POOL_ADDRESS}
-      - PORT=${PORT}
-      - WALLET_ADDRESS=${WALLET_ADDRESS}
+      - NVIDIA_POOL_ADDRESS=${NVIDIA_POOL_ADDRESS}
+      - NVIDIA_PORT=${NVIDIA_PORT}
+      - NVIDIA_WALLET_ADDRESS=${NVIDIA_WALLET_ADDRESS}
     command: >
-      ethminer -P stratum+tcp://${POOL_ADDRESS}:${PORT} -U -O ${WALLET_ADDRESS}
+      ethminer -P stratum+tcp://${NVIDIA_POOL_ADDRESS}:${NVIDIA_PORT} -U -O ${NVIDIA_WALLET_ADDRESS}
     deploy:
       resources:
         limits:
@@ -26,20 +26,20 @@ services:
     container_name: intel-gpu-miner
     restart: unless-stopped
     environment:
-      - POOL_ADDRESS=${POOL_ADDRESS}
-      - PORT=${PORT}
-      - WALLET_ADDRESS=${WALLET_ADDRESS}
+      - INTEL_POOL_ADDRESS=${INTEL_POOL_ADDRESS}
+      - INTEL_PORT=${PORT}
+      - INTEL_WALLET_ADDRESS=${INTEL_WALLET_ADDRESS}
     devices:
       - /dev/dri:/dev/dri
     command: >
-      ethminer -P stratum+tcp://${POOL_ADDRESS}:${PORT} -G -O ${WALLET_ADDRESS} --opencl-device Intel
+      ethminer -P stratum+tcp://${INTEL_POOL_ADDRESS}:${PORT} -G -O ${INTEL_WALLET_ADDRESS} --opencl-device Intel
 
   cpu-miner:
     image: xmrig/xmrig:latest
     container_name: cpu-miner
     restart: unless-stopped
     environment:
-      - POOL_ADDRESS=${CPU_POOL_ADDRESS}
-      - WALLET_ADDRESS=${CPU_WALLET_ADDRESS}
+      - CPU_POOL_ADDRESS=${CPU_POOL_ADDRESS}
+      - CPU_WALLET_ADDRESS=${CPU_WALLET_ADDRESS}
     command: >
       xmrig -o ${CPU_POOL_ADDRESS} -u ${CPU_WALLET_ADDRESS} -p x --cpu-priority=3
