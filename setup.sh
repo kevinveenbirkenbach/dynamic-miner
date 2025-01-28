@@ -74,9 +74,10 @@ EOF
 
 echo ".env file created with mining pool and wallet details."
 
-# Start Docker Compose containers
-echo "Starting Docker containers..."
-docker-compose up -d
+# Pull and build Docker Compose containers
+echo "Pulling and building Docker images..."
+docker-compose pull
+docker-compose build
 
 # Create the monitoring script service
 MONITOR_SCRIPT_PATH=$(pwd)/miner_control.sh

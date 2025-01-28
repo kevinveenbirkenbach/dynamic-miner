@@ -4,7 +4,7 @@ services:
   nvidia-gpu-miner:
     image: ethereumminer/ethminer:latest
     container_name: nvidia-gpu-miner
-    restart: unless-stopped
+    restart: no
     runtime: nvidia
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
@@ -24,7 +24,7 @@ services:
   intel-gpu-miner:
     image: ethereumminer/ethminer:latest
     container_name: intel-gpu-miner
-    restart: unless-stopped
+    restart: no
     environment:
       - INTEL_POOL_ADDRESS=${INTEL_POOL_ADDRESS}
       - INTEL_PORT=${PORT}
@@ -37,7 +37,7 @@ services:
   cpu-miner:
     image: xmrig/xmrig:latest
     container_name: cpu-miner
-    restart: unless-stopped
+    restart: no
     environment:
       - CPU_POOL_ADDRESS=${CPU_POOL_ADDRESS}
       - CPU_WALLET_ADDRESS=${CPU_WALLET_ADDRESS}
