@@ -3,7 +3,7 @@ version: '3.8'
 services:
   ethereum-miner:
     image: ethereumminer/ethminer:latest
-    container_name: ethereum-miner
+    container_name: gpu-miner
     restart: unless-stopped
     runtime: nvidia
     environment:
@@ -20,3 +20,13 @@ services:
           devices:
             - driver: nvidia
               capabilities: [gpu]
+
+  cpu-miner:
+    image: xmrig/xmrig:latest
+    container_name: cpu-miner
+    restart: unless-stopped
+    environment:
+      - POOL_ADDRESS=${CPU_POOL_ADDRESS}
+      - WALLET_ADDRESS=${CPU_WALLET_ADDRESS}
+    command: >
+      xmrig -o ${CPU_POOL_ADDRESS} -u ${CPU_WALLET_ADDRESS} -p x --cpu-priority=3
