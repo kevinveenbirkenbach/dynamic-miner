@@ -1,0 +1,6 @@
+# Pool settings
+POOL_ADDRESS=eu1.ethermine.org
+PORT=4444
+
+# Wallet address
+WALLET_ADDRESS=0xYourEthereumWalletAddress
