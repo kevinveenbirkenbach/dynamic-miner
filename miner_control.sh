@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # Thresholds for GPU usage (separate start and stop thresholds)
 NVIDIA_GPU_START_THRESHOLD=$1  # GPU usage percentage to start the NVIDIA GPU miner

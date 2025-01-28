@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 echo "Welcome to the dynamic-eth-miner setup!"
 
@@ -57,27 +58,35 @@ cat <<EOF > .env
 # CPU Mining Pool
 CPU_POOL_ADDRESS=${CPU_POOL_ADDRESS}
 CPU_WALLET_ADDRESS=${CPU_WALLET_ADDRESS}
+EOF
 
 # NVIDIA GPU Mining Pool
-$(if [ "$HAS_NVIDIA" = true ]; then
-    echo "NVIDIA_POOL_ADDRESS=${NVIDIA_POOL_ADDRESS}"
-    echo "NVIDIA_PORT=${NVIDIA_PORT}"
-    echo "NVIDIA_WALLET_ADDRESS=${NVIDIA_WALLET_ADDRESS}"
-fi)
+if [ "$HAS_NVIDIA" = true ]; then
+    echo "NVIDIA_POOL_ADDRESS=${NVIDIA_POOL_ADDRESS}" >> .env
+    echo "NVIDIA_PORT=${NVIDIA_PORT}" >> .env
+    echo "NVIDIA_WALLET_ADDRESS=${NVIDIA_WALLET_ADDRESS}" >> .env
+fi
 
 # Intel GPU Mining Pool
-$(if [ "$HAS_INTEL" = true ]; then
-    echo "INTEL_POOL_ADDRESS=${INTEL_POOL_ADDRESS}"
-    echo "INTEL_WALLET_ADDRESS=${INTEL_WALLET_ADDRESS}"
-fi)
-EOF
+if [ "$HAS_INTEL" = true ]; then
+    echo "INTEL_POOL_ADDRESS=${INTEL_POOL_ADDRESS}" >> .env
+    echo "INTEL_WALLET_ADDRESS=${INTEL_WALLET_ADDRESS}" >> .env
+fi
 
 echo ".env file created with mining pool and wallet details."
 
 # Pull and build Docker Compose containers
-echo "Pulling and building Docker images..."
-docker-compose pull
-docker-compose build
+echo "Pulling Docker images..."
+if ! docker-compose pull; then
+    echo "Error: Failed to pull Docker images."
+    exit 1
+fi
+
+echo "Building Docker images..."
+if ! docker-compose build; then
+    echo "Error: Failed to build Docker images."
+    exit 1
+fi
 
 # Create the monitoring script service
 MONITOR_SCRIPT_PATH=$(pwd)/miner_control.sh
@@ -92,9 +101,9 @@ Requires=docker.service
 [Service]
 Type=simple
 ExecStart=/bin/bash $MONITOR_SCRIPT_PATH \
-    $(if [ "$HAS_NVIDIA" = true ]; then echo "$NVIDIA_START_THRESHOLD $NVIDIA_STOP_THRESHOLD"; else echo "0 0"; fi) \
+    ${NVIDIA_START_THRESHOLD:-0} ${NVIDIA_STOP_THRESHOLD:-0} \
     $CPU_START_THRESHOLD $CPU_STOP_THRESHOLD $CHECK_INTERVAL \
-    $(if [ "$HAS_INTEL" = true ]; then echo "$INTEL_START_THRESHOLD $INTEL_STOP_THRESHOLD"; else echo "0 0"; fi)
+    ${INTEL_START_THRESHOLD:-0} ${INTEL_STOP_THRESHOLD:-0}
 Restart=always
 EnvironmentFile=${PWD}/.env
 
